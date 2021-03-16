@@ -1,0 +1,69 @@
+html, body { margin: 0; padding: 0; background-color: orchid; }
+span {
+  user-select: none;
+}
+
+#nomination-page {
+  position: absolute;
+  background-color: rgb(50,0,255);
+}
+.page {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 1s;
+  min-height: 100%;
+  /* background-color: cyan; */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+#main-page {
+  background: linear-gradient(rgb(240,200,255),rgb(200,180,255));
+}
+
+.nom {
+  display: grid;
+  grid-template-columns: 5fr 1fr;
+}
+.game-board {
+  // border: 2px solid blue;
+  width: 80vw;
+  /* background-color: orange; */
+}
+.main-grid {
+  display: flex;
+}
+.player-icon {
+  // color:white;
+  // border: 1px solid black;
+  // background-color: #444;
+  margin: 2px;
+}
+.items {
+  display: grid;
+  grid-template-rows: 2fr 1fr 2fr;
+  font-size: 2em;
+}
+.grid-item {
+  background: beige;
+  display: inline;
+  // border: 1px solid black;
+  height: 1.5em;
+  margin: 10px 40px;
+}
+.answer-btn {
+  font: 3em arial black;
+  background: rgb(0, 255, 0);
+  margin: 10px;
+}
+#no-btn {
+  background-color: rgb(255,0,0);
+  color: white;
+}

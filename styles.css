@@ -1,0 +1,98 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: orchid;
+}
+
+span {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+#nomination-page {
+  position: absolute;
+  background-color: #3200ff;
+}
+
+.page {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  opacity: 1;
+  -webkit-transition: opacity 1s;
+  transition: opacity 1s;
+  min-height: 100%;
+  /* background-color: cyan; */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+#main-page {
+  background: -webkit-gradient(linear, left top, left bottom, from(#f0c8ff), to(#c8b4ff));
+  background: linear-gradient(#f0c8ff, #c8b4ff);
+}
+
+.nom {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 5fr 1fr;
+      grid-template-columns: 5fr 1fr;
+}
+
+.game-board {
+  width: 80vw;
+  /* background-color: orange; */
+}
+
+.main-grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.player-icon {
+  margin: 2px;
+}
+
+.items {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: 2fr 1fr 2fr;
+      grid-template-rows: 2fr 1fr 2fr;
+  font-size: 2em;
+}
+
+.grid-item {
+  background: beige;
+  display: inline;
+  height: 1.5em;
+  margin: 10px 40px;
+}
+
+.answer-btn {
+  font: 3em arial black;
+  background: lime;
+  margin: 10px;
+}
+
+#no-btn {
+  background-color: red;
+  color: white;
+}
+/*# sourceMappingURL=styles.css.map */
