@@ -90,10 +90,11 @@ const QUESTIONS = [{ text: 'Are the numbers equal?',
 const currentPair = { a: { color: 'red', text: '123' },
     b: { color: 'blue', text: '321' },
     question: QUESTIONS[0].text,
-    index: 0
+    index: 0,
+    lastWinner: -1
 };
 const SocketTypes = { nomination: 'nomination',
-    newComparison: 'newComparison',
+    winnerAndNewComparison: 'winnerAndNewComparison',
     answer: 'answer',
     updatedPlayerList: 'updatedPlayerList'
 };
@@ -127,15 +128,16 @@ io.on('connection', (socket) => {
             PlayerList[id].score += 150;
         }
         else {
-            PlayerList[id].score = PlayerList[id].score * .75 | 0;
+            PlayerList[id].score = PlayerList[id].score * .6 | 0;
         }
         if (correct) {
             updatePair();
-            io.emit('newComparison', currentPair);
+            currentPair.lastWinner = id;
+            io.emit('winnerAndNewComparison', currentPair);
         }
         io.emit('updatedPlayerList', PlayerList);
     });
-    io.emit('newComparison', currentPair);
+    io.emit('winnerAndNewComparison', currentPair);
 });
 function updatePair() {
     const index = Math.random() * QUESTIONS.length | 0;

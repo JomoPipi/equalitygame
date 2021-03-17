@@ -16,5 +16,5 @@ interface Player {
 type SocketTypes
   = 'nomination'
   | 'updatedPlayerList'
-  | 'newComparison'
+  | 'winnerAndNewComparison'
   | 'answer'

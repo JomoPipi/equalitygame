@@ -1,4 +1,4 @@
-html, body { margin: 0; padding: 0; background-color: orchid; }
+html, body { margin: 0; padding: 0; background-color: rgb(218, 154, 112); }
 span {
   user-select: none;
 }
@@ -25,7 +25,7 @@ span {
 }
 
 #main-page {
-  background: linear-gradient(rgb(240,200,255),rgb(200,180,255));
+  background: linear-gradient(rgb(200, 255, 205),rgb(200,180,255));
 }
 
 .nom {
@@ -50,6 +50,7 @@ span {
   display: grid;
   grid-template-rows: 2fr 1fr 2fr;
   font-size: 2em;
+  transition: background 0.3s;
 }
 .grid-item {
   background: beige;
@@ -61,9 +62,59 @@ span {
 .answer-btn {
   font: 3em arial black;
   background: rgb(0, 255, 0);
+  transition: background 0.3s;
   margin: 10px;
 }
-#no-btn {
-  background-color: rgb(255,0,0);
+.no-btn {
+  background: rgb(255,0,0);
   color: white;
+}
+#the-question {
+  width: 60%;
+  margin: auto;
+}
+$light: rgb(69, 0, 101);
+$glow: rgb(0, 255, 0);
+.glow {
+  color: $light;
+  text-shadow: 
+    0 0 1px $light,
+    0 0 5px $light,
+    0 0 10px $glow;
+  animation: glow0 .2s infinite alternate, glow1 .3s infinite alternate;
+}
+
+@keyframes glow0 {
+  0%   {}
+  100% { 
+    text-shadow: 
+      0 0 1px $glow,
+      0 0 5px $glow,
+      0 0 10px $light;
+  }
+}
+@keyframes glow1 {
+  0%   {}
+  100% { 
+    color: $glow;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// UTILITY ///
+.disabled {
+  background: gray;
+  color: #333;
 }

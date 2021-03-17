@@ -11,6 +11,8 @@ import './nomination/nomination.js'
 
 console.log('Hello World!!!')
 
+const state : { players : Record<number,Player>, gamePaused : boolean } = { players: [], gamePaused: false }
+
 const startPage = document.getElementById('nomination-page')!
 subscribeOnce('nomination', () => {
   startPage.style.opacity = '0'
@@ -18,7 +20,8 @@ subscribeOnce('nomination', () => {
 })
 
 const list = document.getElementById('playerlist')!
-subscribe('updatedPlayerList', (playerList : any[]) => {
+subscribe('updatedPlayerList', (playerList : Record<number,Player> ) => {
+  state.players = playerList
   list.innerHTML = ''
   Object.values(playerList)
     .sort((a,b) => b.score - a.score)
@@ -56,17 +59,50 @@ subscribe('updatedPlayerList', (playerList : any[]) => {
 
 const itemA = document.getElementById('item-a')!
 const itemB = document.getElementById('item-b')!
-subscribe('newComparison', ({ a, b, question }) => {
-  itemA.innerText = a.text
-  itemB.innerText = b.text
-  itemA.style.color = a.color
-  itemB.style.color = b.color
-  document.getElementById('the-question')!.innerText = question
+const topText = document.getElementById('the-question')!
+const countdown = document.getElementById('countdown')!
+const container = document.getElementById('items-container')!
+const yes = document.getElementById('yes-btn')!
+const no = document.getElementById('no-btn')!
+subscribe('winnerAndNewComparison', ({ a, b, question, lastWinner }) => {
+
+  const winner = state.players[lastWinner]
+
+  if (!winner) return setNewQ()
+
+  topText.innerHTML = `<span class="glow">${winner.name}</span> got the answer!`
+  
+  state.gamePaused = true
+  yes.classList.add('disabled')
+  no.classList.add('disabled')
+  container.style.background = `rgba(0,0,0,0.25)`
+  ;(function count(n) {
+    if (!n)
+    {
+      countdown.innerText = ''
+      container.style.background = ''
+      yes.classList.remove('disabled')
+      no.classList.remove('disabled')
+      state.gamePaused = false
+      setNewQ()
+      return;
+    }
+    countdown.innerText = n.toString()
+    setTimeout(count.bind(null, n-1), 600)
+  })(3)
+
+  function setNewQ() {
+    itemA.innerText = a.text
+    itemB.innerText = b.text
+    itemA.style.color = a.color
+    itemB.style.color = b.color
+    topText.innerHTML = ''
+    topText.innerText = question
+  }
 })
 
-const yes = document.getElementById('yes-btn')
-const no = document.getElementById('no-btn')
 document.getElementById('yes-no-btns')!.onclick = e => {
+  if (state.gamePaused) return;
   const target = e.target
   if (![yes,no].includes(target as any)) return;
   const answer = target === yes

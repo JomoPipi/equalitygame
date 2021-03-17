@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: orchid;
+  background-color: #da9a70;
 }
 
 span {
@@ -44,8 +44,8 @@ span {
 }
 
 #main-page {
-  background: -webkit-gradient(linear, left top, left bottom, from(#f0c8ff), to(#c8b4ff));
-  background: linear-gradient(#f0c8ff, #c8b4ff);
+  background: -webkit-gradient(linear, left top, left bottom, from(#c8ffcd), to(#c8b4ff));
+  background: linear-gradient(#c8ffcd, #c8b4ff);
 }
 
 .nom {
@@ -76,6 +76,8 @@ span {
   -ms-grid-rows: 2fr 1fr 2fr;
       grid-template-rows: 2fr 1fr 2fr;
   font-size: 2em;
+  -webkit-transition: background 0.3s;
+  transition: background 0.3s;
 }
 
 .grid-item {
@@ -88,11 +90,62 @@ span {
 .answer-btn {
   font: 3em arial black;
   background: lime;
+  -webkit-transition: background 0.3s;
+  transition: background 0.3s;
   margin: 10px;
 }
 
-#no-btn {
-  background-color: red;
+.no-btn {
+  background: red;
   color: white;
+}
+
+#the-question {
+  width: 60%;
+  margin: auto;
+}
+
+.glow {
+  color: #450065;
+  text-shadow: 0 0 1px #450065, 0 0 5px #450065, 0 0 10px lime;
+  -webkit-animation: glow0 .2s infinite alternate, glow1 .3s infinite alternate;
+          animation: glow0 .2s infinite alternate, glow1 .3s infinite alternate;
+}
+
+@-webkit-keyframes glow0 {
+  0% {
+  }
+  100% {
+    text-shadow: 0 0 1px lime, 0 0 5px lime, 0 0 10px #450065;
+  }
+}
+
+@keyframes glow0 {
+  0% {
+  }
+  100% {
+    text-shadow: 0 0 1px lime, 0 0 5px lime, 0 0 10px #450065;
+  }
+}
+
+@-webkit-keyframes glow1 {
+  0% {
+  }
+  100% {
+    color: lime;
+  }
+}
+
+@keyframes glow1 {
+  0% {
+  }
+  100% {
+    color: lime;
+  }
+}
+
+.disabled {
+  background: gray;
+  color: #333;
 }
 /*# sourceMappingURL=styles.css.map */
