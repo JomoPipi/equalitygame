@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #da9a70;
+  background-color: #f5fbff;
 }
 
 span {
@@ -38,14 +38,13 @@ span {
   -webkit-transition: opacity 1s;
   transition: opacity 1s;
   min-height: 100%;
-  /* background-color: cyan; */
   min-height: 100vh;
   min-height: -webkit-fill-available;
 }
 
 #main-page {
-  background: -webkit-gradient(linear, left top, left bottom, from(#c8ffcd), to(#c8b4ff));
-  background: linear-gradient(#c8ffcd, #c8b4ff);
+  -webkit-transition: background-color 0.5s ease-out;
+  transition: background-color 0.5s ease-out;
 }
 
 .nom {
@@ -67,7 +66,11 @@ span {
 }
 
 .player-icon {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   margin: 2px;
+  -webkit-transition: background-color 0.3s ease-out;
+  transition: background-color 0.3s ease-out;
 }
 
 .items {
@@ -85,6 +88,7 @@ span {
   display: inline;
   height: 1.5em;
   margin: 10px 40px;
+  font-weight: bolder;
 }
 
 .answer-btn {
@@ -103,6 +107,10 @@ span {
 #the-question {
   width: 60%;
   margin: auto;
+}
+
+#countdown {
+  text-shadow: 2px 2px cyan;
 }
 
 .glow {

@@ -1,22 +1,28 @@
 import { face } from './components/getface/getface.js';
 import { emit, subscribe, subscribeOnce } from './helpers.js';
 import './nomination/nomination.js';
+import { flash } from './flash.js';
 console.log('Hello World!!!');
-const state = { players: [], gamePaused: false };
+const state = { players: [],
+    gamePaused: false,
+    playerId: -1
+};
 const startPage = document.getElementById('nomination-page');
-subscribeOnce('nomination', () => {
+subscribeOnce('nomination', id => {
+    state.playerId = id;
     startPage.style.opacity = '0';
     setTimeout(() => startPage.style.display = 'none', 1000);
 });
+const mainPage = document.getElementById('main-page');
 const list = document.getElementById('playerlist');
 subscribe('updatedPlayerList', (playerList) => {
-    state.players = playerList;
     list.innerHTML = '';
     Object.values(playerList)
         .sort((a, b) => b.score - a.score)
-        .forEach(({ name, color, score, faceData }, i) => {
+        .forEach(({ name, color, score, faceData, id }, i) => {
         const size = 20 + Math.max(0, (10 - i) * 5);
         const container = document.createElement('div');
+        container.style.border = `2px solid ${color}`;
         container.classList.add('player-icon');
         container.innerHTML = `${name}<br>${score}`;
         const icon = document.createElement('canvas');
@@ -35,7 +41,16 @@ subscribe('updatedPlayerList', (playerList) => {
         f.render();
         container.appendChild(icon);
         list.appendChild(container);
+        const difference = score - (state.players[id]?.score ?? score);
+        const flashColor = difference > 0 ? 'rgb(0, 255, 0)' : 'rgb(255, 0, 0)';
+        if (difference !== 0) {
+            flash(flashColor, container);
+            if (id === state.playerId) {
+                flash(flashColor, mainPage);
+            }
+        }
     });
+    state.players = playerList;
 });
 const itemA = document.getElementById('item-a');
 const itemB = document.getElementById('item-b');
@@ -52,11 +67,9 @@ subscribe('winnerAndNewComparison', ({ a, b, question, lastWinner }) => {
     state.gamePaused = true;
     yes.classList.add('disabled');
     no.classList.add('disabled');
-    container.style.background = `rgba(0,0,0,0.25)`;
     (function count(n) {
         if (!n) {
-            countdown.innerText = '';
-            container.style.background = '';
+            countdown.innerText = '🤔';
             yes.classList.remove('disabled');
             no.classList.remove('disabled');
             state.gamePaused = false;

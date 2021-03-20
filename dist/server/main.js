@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, '/../../')));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/../../index.html')));
 http.listen(8080, () => { console.log('listening on port 8080'); });
 const PlayerList = {};
-const colors = ['red', 'blue', 'green', 'purple', 'orange', 'cyan', 'gray'];
+const colors = ['red', 'blue', 'green', 'purple', 'orange', 'gray'];
 const getNums = () => {
     const n1 = Math.random() * 1e9 | 0;
     const n2 = chance(.5) ? n1 : Math.random() * 1e9 | 0;
@@ -66,78 +66,72 @@ const QUESTIONS = [{ text: 'Are the numbers equal?',
             const [c1, c2] = getColors();
             return [{ text: numsA.join(''), color: c1 }, { text: numsB.join(''), color: c2 }];
         }
-    }, { text: 'Are they permutations of each other?',
-        equals(a, b) { return [...a.text].sort().join('') === [...b.text].sort().join(''); },
-        generateAB() {
+    },
+    { text: 'Are they permutations of each other?',
+        equals(a, b) { return [...a.text].sort().join('') === [...b.text].sort().join(''); }, generateAB() {
             if (chance(.5))
                 return genAB();
-            const characters = [...Array(Math.random() * 5 + 5 | 0)].map(_ => Math.random() * 9 | 0);
+            const characters = [...Array(Math.random() * 5 + 3 | 0)].map(_ => Math.random() * 9 | 0);
             const numsA = characters;
-            const numsB = characters.slice();
-            shuffleArray(numsB);
-            const [c1, c2] = getColors();
-            return [{ text: numsA.join(''), color: c1 }, { text: numsB.join(''), color: c2 }];
+            const numsB = characters.slice(), number, lastWinner;
+        } }, { a: { color: 'red', text: '123' },
+        b: { color: 'blue', text: '321' },
+        question: QUESTIONS[0].text,
+        index: 0,
+        lastWinner: -1
+    },
+    function updatePair() {
+        const index = Math.random() * QUESTIONS.length | 0;
+        const [a, b] = QUESTIONS[index].generateAB();
+        currentPair.a = a;
+        currentPair.b = b;
+        currentPair.question = QUESTIONS[index].text;
+        currentPair.index = index;
+    }, function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
         }
-    }];
-const currentPair = { a: { color: 'red', text: '123' },
-    b: { color: 'blue', text: '321' },
-    question: QUESTIONS[0].text,
-    index: 0,
-    lastWinner: -1
-};
-function updatePair() {
-    const index = Math.random() * QUESTIONS.length | 0;
-    const [a, b] = QUESTIONS[index].generateAB();
-    currentPair.a = a;
-    currentPair.b = b;
-    currentPair.question = QUESTIONS[index].text;
-    currentPair.index = index;
-}
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-}
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    const id = newId();
-    socket.on('nomination', (name) => {
-        console.log('new player named: ' + name + "!");
-        PlayerList[id] =
-            { color: colors[id % colors.length],
-                id,
-                score: 0,
-                name, faceData: [...Array(4)].map(_ => Math.random() * 9)
-            };
-        socket.emit('nomination', '');
-        io.emit('updatedPlayerList', PlayerList);
-    });
-    socket.on('disconnect', () => {
-        const removed = PlayerList[id];
-        if (!removed)
-            return;
-        delete PlayerList[id];
-        console.log(`user ${removed.name} disconnected`);
-        io.emit('updatedPlayerList', PlayerList);
-    });
-    socket.on('answer', (answeredYes) => {
-        const correct = answeredYes === QUESTIONS[currentPair.index].equals(currentPair.a, currentPair.b);
-        if (!PlayerList[id])
-            return;
-        if (correct) {
-            PlayerList[id].score += 200;
-            updatePair();
-            currentPair.lastWinner = id;
-            io.emit('winnerAndNewComparison', currentPair);
-        }
-        else {
-            PlayerList[id].score = PlayerList[id].score * .6 | 0;
-        }
-        io.emit('updatedPlayerList', PlayerList);
-    });
-    io.emit('winnerAndNewComparison', currentPair);
-});
+    }, interface, Socket, {},
+    io.on('connection', (socket) => {
+        console.log('a user connected');
+        const id = newId();
+        socket.on('nomination', (name) => {
+            console.log('new player named: ' + name + "!");
+            PlayerList[id] =
+                { color: colors[id % colors.length],
+                    id,
+                    score: 0,
+                    name, faceData: [...Array(4)].map(_ => Math.random() * 9)
+                };
+            socket.emit('nomination', id);
+            io.emit('updatedPlayerList', PlayerList);
+        });
+        socket.on('disconnect', () => {
+            const removed = PlayerList[id];
+            if (!removed)
+                return;
+            delete PlayerList[id];
+            console.log(`user ${removed.name} disconnected`);
+            io.emit('updatedPlayerList', PlayerList);
+        });
+        socket.on('answer', (answeredYes) => {
+            const correct = answeredYes === QUESTIONS[currentPair.index].equals(currentPair.a, currentPair.b);
+            if (!PlayerList[id])
+                return;
+            if (correct) {
+                PlayerList[id].score += 200;
+                updatePair();
+                currentPair.lastWinner = id;
+                io.emit('winnerAndNewComparison', currentPair);
+            }
+            else {
+                PlayerList[id].score = PlayerList[id].score * .6 | 0;
+            }
+            io.emit('updatedPlayerList', PlayerList);
+        });
+        io.emit('winnerAndNewComparison', currentPair);
+    })];
 //# sourceMappingURL=main.js.map

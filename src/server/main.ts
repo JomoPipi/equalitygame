@@ -22,7 +22,7 @@ http.listen(8080, () => {console.log('listening on port 8080') })
 
 const PlayerList : Record<number,Player> = {}
 
-const colors = ['red','blue','green','purple','orange','cyan','gray'] as const
+const colors = ['red','blue','green','purple','orange','gray'] as const
 type GameItem = { color : string, text : string }
 type Question = { text : string, equals(a : GameItem, b : GameItem) : boolean, generateAB() : [GameItem, GameItem] }
 
@@ -92,17 +92,9 @@ const QUESTIONS : Question[] =
     , equals(a, b) { return [...a.text].sort().join('') === [...b.text].sort().join('') }
     , generateAB() {
         if (chance(.5)) return genAB() 
-        const characters = [...Array(Math.random() * 5 + 5 | 0)].map(_ => Math.random() * 9 | 0)
+        const characters = [...Array(Math.random() * 5 + 3 | 0)].map(_ => Math.random() * 9 | 0)
         const numsA = characters
-        const numsB = characters.slice()
-        shuffleArray(numsB)
-        const [c1, c2] = getColors()
-        return [{ text: numsA.join(''), color: c1 }, { text: numsB.join(''), color: c2 }]
-      }
-    }
-  ]
-
-const currentPair : Record<'a' | 'b', GameItem> & { question : string, index : number, lastWinner : number } = 
+        const numsB = characters.slice()          number, lastWinner : number } = 
   { a: { color: 'red', text: '123' }
   , b: { color: 'blue', text: '321' }
   , question: QUESTIONS[0].text
@@ -148,7 +140,7 @@ io.on('connection', (socket : Socket) => {
       , faceData: [...Array(4)].map(_ => Math.random() * 9) as [number,number,number,number]
       }
       
-    socket.emit('nomination', '')
+    socket.emit('nomination', id)
     io.emit('updatedPlayerList', PlayerList)
   })
 

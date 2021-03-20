@@ -1,4 +1,4 @@
-html, body { margin: 0; padding: 0; background-color: rgb(218, 154, 112); }
+html, body { margin: 0; padding: 0; background-color: rgb(245, 251, 255); }
 span {
   user-select: none;
 }
@@ -19,13 +19,12 @@ span {
   opacity: 1;
   transition: opacity 1s;
   min-height: 100%;
-  /* background-color: cyan; */
   min-height: 100vh;
   min-height: -webkit-fill-available;
 }
 
 #main-page {
-  background: linear-gradient(rgb(200, 255, 205),rgb(200,180,255));
+  transition: background-color 0.5s ease-out;
 }
 
 .nom {
@@ -44,7 +43,9 @@ span {
   // color:white;
   // border: 1px solid black;
   // background-color: #444;
+  box-sizing: border-box;
   margin: 2px;
+  transition: background-color 0.3s ease-out;
 }
 .items {
   display: grid;
@@ -58,6 +59,7 @@ span {
   // border: 1px solid black;
   height: 1.5em;
   margin: 10px 40px;
+  font-weight: bolder;
 }
 .answer-btn {
   font: 3em arial black;
@@ -73,6 +75,10 @@ span {
   width: 60%;
   margin: auto;
 }
+#countdown { 
+  text-shadow: 2px 2px cyan;
+}
+
 $light: rgb(69, 0, 101);
 $glow: rgb(0, 255, 0);
 .glow {
