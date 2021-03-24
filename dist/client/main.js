@@ -1,12 +1,12 @@
 import { face } from './components/getface/getface.js';
 import { nominate } from './nomination/nomination.js';
 import { flash } from './flash.js';
-import { SocketEvents } from '../shared/constants.js';
+import { QUESTIONS, SocketEvents } from '../shared/constants.js';
 const socket = io();
 nominate(socket);
-const state = { players: [],
+const state = { players: {},
     gamePaused: false,
-    playerId: -1
+    playerId: ''
 };
 const startPage = document.getElementById('nomination-page');
 socket.once(SocketEvents.nomination, id => {
@@ -16,7 +16,7 @@ socket.once(SocketEvents.nomination, id => {
 });
 const mainPage = document.getElementById('main-page');
 const list = document.getElementById('playerlist');
-socket.on(SocketEvents.updatedPlayerList, (playerList) => {
+socket.on(SocketEvents.updatedPlayerList, playerList => {
     list.innerHTML = '';
     Object.values(playerList)
         .sort((a, b) => b.score - a.score)
@@ -60,8 +60,8 @@ const countdown = document.getElementById('countdown');
 const container = document.getElementById('items-container');
 const yes = document.getElementById('yes-btn');
 const no = document.getElementById('no-btn');
-socket.on(SocketEvents.winnerAndNewComparison, ({ a, b, question, lastWinner }) => {
-    const winner = state.players[lastWinner];
+socket.on(SocketEvents.winnerAndNewComparison, ({ a, b, questionIndex, lastWinnerId }) => {
+    const winner = state.players[lastWinnerId];
     if (!winner)
         return setNewQ();
     topText.innerHTML = `<span class="glow">${winner.name}</span> got the answer!`;
@@ -86,7 +86,7 @@ socket.on(SocketEvents.winnerAndNewComparison, ({ a, b, question, lastWinner }) 
         itemA.style.color = a.color;
         itemB.style.color = b.color;
         topText.innerHTML = '';
-        topText.innerText = question;
+        topText.innerText = QUESTIONS[questionIndex].text;
     }
 });
 document.getElementById('yes-no-btns').onclick = e => {
