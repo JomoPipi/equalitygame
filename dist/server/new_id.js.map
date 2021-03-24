@@ -1,1 +1,1 @@
-{"version":3,"file":"new_id.js","sourceRoot":"","sources":["../../src/server/new_id.ts"],"names":[],"mappings":";AAAA,IAAI,EAAE,GAAG,CAAC,CAAA;AACV,MAAM,CAAC,OAAO,GAAG;IACf,OAAO,EAAE,EAAE,CAAA;AACb,CAAC,CAAA"}
+{"version":3,"file":"new_id.js","sourceRoot":"","sources":["../../src/server/new_id.ts"],"names":[],"mappings":"AAOA,IAAI,EAAE,GAAG,CAAC,CAAA;AACV,MAAM,UAAU,KAAK;IACnB,OAAO,EAAE,EAAE,CAAA;AACb,CAAC"}

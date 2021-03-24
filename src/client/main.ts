@@ -6,11 +6,13 @@
 
 
 import { face } from './components/getface/getface.js'
-import { emit, subscribe, subscribeOnce } from './helpers.js'
-import './nomination/nomination.js'
+import { nominate } from './nomination/nomination.js'
 import { flash } from './flash.js'
+import { SocketEvents } from '../shared/constants.js'
 
-console.log('Hello World!!!')
+const socket : MySocket = io();
+
+nominate(socket)
 
 type GameState = { players : Record<number,Player>, gamePaused : boolean, playerId : number }
 
@@ -21,7 +23,7 @@ const state : GameState =
   }
 
 const startPage = document.getElementById('nomination-page')!
-subscribeOnce('nomination', id => {
+socket.once(SocketEvents.nomination, id => {
   state.playerId = id
   startPage.style.opacity = '0'
   setTimeout(() => startPage.style.display = 'none', 1000)
@@ -29,7 +31,7 @@ subscribeOnce('nomination', id => {
 
 const mainPage = document.getElementById('main-page')!
 const list = document.getElementById('playerlist')!
-subscribe('updatedPlayerList', (playerList : Record<number,Player> ) => {
+socket.on(SocketEvents.updatedPlayerList, (playerList : Record<number,Player> ) => {
   list.innerHTML = ''
   Object.values(playerList)
     .sort((a,b) => b.score - a.score)
@@ -73,7 +75,7 @@ const countdown = document.getElementById('countdown')!
 const container = document.getElementById('items-container')!
 const yes = document.getElementById('yes-btn')!
 const no = document.getElementById('no-btn')!
-subscribe('winnerAndNewComparison', ({ a, b, question, lastWinner }) => {
+socket.on(SocketEvents.winnerAndNewComparison, ({ a, b, question, lastWinner }) => {
 
   const winner = state.players[lastWinner]
 
@@ -113,7 +115,7 @@ document.getElementById('yes-no-btns')!.onclick = e => {
   const target = e.target
   if (![yes,no].includes(target as any)) return;
   const answer = target === yes
-  emit('answer', answer)
+  socket.emit(SocketEvents.answer, answer)
 }
 
 export {}

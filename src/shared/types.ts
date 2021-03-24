@@ -13,8 +13,14 @@ interface Player {
   faceData : [number, number, number, number]
 }
 
-type SocketTypes
-  = 'nomination'
-  | 'updatedPlayerList'
-  | 'winnerAndNewComparison'
-  | 'answer'
+type SocketEvents
+    = 'nomination'
+    | 'updatedPlayerList'
+    | 'winnerAndNewComparison'
+    | 'answer'
+
+interface MySocket {
+  on(event : SocketEvents, fn : (x : any) => void) : SocketIOClient.Emitter
+  once(event : SocketEvents, fn : (x : any) => void) : SocketIOClient.Emitter
+  emit(event : SocketEvents, data : any) : SocketIOClient.Emitter
+}

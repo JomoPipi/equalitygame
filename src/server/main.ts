@@ -5,14 +5,20 @@
 
 
 
-const express = require('express')
-const app = express()
-const http = require('http').Server(app)
-const io = require('socket.io')(http)
-const path = require('path')
-const newId = require('./new_id.js')
-
-const clientPath = path.join(__dirname)
+import { SocketEvents } from '../shared/constants'
+import express from "express";
+import { createServer } from "http";
+import path from "path"
+import { Server, Socket } from 'socket.io';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const app = express();
+const http = createServer(app);
+const io = new Server(http, {
+  // options
+});
+import { newId } from './new_id.js'
 
 app.use(express.static(path.join(__dirname, '/../../')))
 
@@ -54,7 +60,7 @@ const QUESTIONS : Question[] =
     , equals(a, b) { return a.color === b.color }
     , generateAB : genAB
     }
-  , { text: 'Are the lengths equal?'
+  , { text: 'Same number of digits?'
     , equals(a, b) { return a.text.length === b.text.length }
     , generateAB() {
         const rnd6Digit = () => (0.89 * Math.random() + 0.1) * 1e7 + Math.random() * 1e5 | 0
@@ -94,7 +100,14 @@ const QUESTIONS : Question[] =
         if (chance(.5)) return genAB() 
         const characters = [...Array(Math.random() * 5 + 3 | 0)].map(_ => Math.random() * 9 | 0)
         const numsA = characters
-        const numsB = characters.slice()          number, lastWinner : number } = 
+        const numsB = characters.slice()
+          shuffleArray(numsB)
+        const [c1, c2] = getColors()
+        return [{ text: numsA.join(''), color: c1 }, { text: numsB.join(''), color: c2 }]     
+      }
+    }
+  ]
+  const currentPair : { a : GameItem, b : GameItem, question : string, index : number, lastWinner : number } = 
   { a: { color: 'red', text: '123' }
   , b: { color: 'blue', text: '321' }
   , question: QUESTIONS[0].text
@@ -121,16 +134,11 @@ function shuffleArray(array : any[]) {
   }
 }
 
-interface Socket {
-  emit(type : SocketTypes, data : any) : void
-  on(type : SocketTypes | 'disconnect', callback : Function) : void
-}
-
 io.on('connection', (socket : Socket) => {
   console.log('a user connected')
 
   const id = newId()
-  socket.on('nomination', (name : string) => {
+  socket.on(SocketEvents.nomination, (name : string) => {
     console.log('new player named: ' + name + "!")
     PlayerList[id] = 
       { color: colors[id % colors.length]
@@ -140,19 +148,19 @@ io.on('connection', (socket : Socket) => {
       , faceData: [...Array(4)].map(_ => Math.random() * 9) as [number,number,number,number]
       }
       
-    socket.emit('nomination', id)
-    io.emit('updatedPlayerList', PlayerList)
+    socket.emit(SocketEvents.nomination, id)
+    io.emit(SocketEvents.updatedPlayerList, PlayerList)
   })
-
+  
   socket.on('disconnect', () => {
     const removed = PlayerList[id]
     if (!removed) return;
     delete PlayerList[id]
     console.log(`user ${removed.name} disconnected`);
-    io.emit('updatedPlayerList', PlayerList)
+    io.emit(SocketEvents.updatedPlayerList, PlayerList)
   })
 
-  socket.on('answer', (answeredYes : boolean) => {
+  socket.on(SocketEvents.answer, (answeredYes : boolean) => {
     const correct = answeredYes === QUESTIONS[currentPair.index].equals(currentPair.a, currentPair.b)
     if (!PlayerList[id]) return;
     if (correct)
@@ -160,14 +168,14 @@ io.on('connection', (socket : Socket) => {
       PlayerList[id].score += 200
       updatePair()
       currentPair.lastWinner = id
-      io.emit('winnerAndNewComparison', currentPair)
+      io.emit(SocketEvents.winnerAndNewComparison, currentPair)
     }
     else
     {
       PlayerList[id].score = PlayerList[id].score * .6 | 0
     }
-    io.emit('updatedPlayerList', PlayerList)
+    io.emit(SocketEvents.updatedPlayerList, PlayerList)
   })
 
-  io.emit('winnerAndNewComparison', currentPair)
+  io.emit(SocketEvents.winnerAndNewComparison, currentPair)
 })
